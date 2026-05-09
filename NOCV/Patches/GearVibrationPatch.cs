@@ -95,7 +95,7 @@ public class GearVibrationPatch: VibChannelUser<GearVibrationPatch>
 
     private static AudioSource CheckAndCallStartPlay(AudioSource source, int motorIndex, float maxMagnitude, LandingGear gear)
     {
-        return !gear.aircraft.Player.IsLocalPlayer ? source : VibOnAudioSources.StartPlaying(source, motorIndex, maxMagnitude);
+        return !GameManager.IsLocalAircraft(gear.aircraft) ? source : VibOnAudioSources.StartPlaying(source, motorIndex, maxMagnitude);
     }
     
     
