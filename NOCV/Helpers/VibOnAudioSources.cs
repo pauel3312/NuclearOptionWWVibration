@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using NOCV.Features;
 using UnityEngine;
 
@@ -76,16 +77,19 @@ public class VibOnAudioSources: MonoBehaviour
 
     private void FixedUpdate()
     {
+        var sourcesToRemove = PlayingSources
+            .Where(ps => ps.Source == null || !ps.Source.isPlaying);
+
+        foreach (var source in sourcesToRemove)
+        {
+            // NOCV.Logger.LogDebug($"Removed source. Now has {PlayingSources.Count} sources.");
+            _channel!.Disable();
+            PlayingSources.Remove(source);
+        }
+        
         var motorMagnitudes = new Dictionary<int, float>();
         foreach (var playingSource in PlayingSources)
         {
-            if (playingSource.Source == null || !playingSource.Source.isPlaying)
-            {
-                _channel!.Disable();
-                PlayingSources.Remove(playingSource);
-                // NOCV.Logger.LogDebug($"Removed source. Now has {PlayingSources.Count} sources.");
-                continue;
-            }
             if (!motorMagnitudes.ContainsKey(playingSource.MotorIndex))
                 motorMagnitudes[playingSource.MotorIndex] = 0;
             motorMagnitudes[playingSource.MotorIndex] += playingSource.MaxMagnitude*playingSource.Source.volume;
