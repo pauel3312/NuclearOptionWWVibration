@@ -16,7 +16,7 @@ public class AoAFeedbackPatch: VibChannelUser<AoAFeedbackPatch>
     /// <param name="aircraft"></param>
     [HarmonyPatch(nameof(AoAFeedback.RunAoAFeedback))]
     [HarmonyPostfix]
-    public static void AoAFeedbackPostfix(Aircraft aircraft)    
+    public static void AoAFeedbackPostfix(Aircraft? aircraft)    
     {
         if (aircraft == null) return;
         if (aircraft.name is "AttackHelo1" or "UtilityHelo1")
@@ -36,15 +36,4 @@ public class AoAFeedbackPatch: VibChannelUser<AoAFeedbackPatch>
             Channel!.SetVibration(AoAFeedback.shake * (1 / AoAFeedback.aoaEffects.ShakeFactor) * PluginConfig.AoAMultiplier.Value, 0f);
         }    
     }
-    
-    // [HarmonyPatch(nameof(AoAFeedback.SetupAircraft))]
-    // [HarmonyPostfix]
-    // public static void SetupAircraftPostfix(Aircraft aircraft)
-    // {
-    //     if (aircraft == null) return;
-    // NOCV.Logger.LogDebug($"{AoAFeedback.aoaEffects.OnsetSpeed}:{AoAFeedback.aoaEffects.FullVolumeSpeed}");
-    // NOCV.Logger.LogDebug($"{AoAFeedback.aoaEffects.OnsetAlpha}:{AoAFeedback.aoaEffects.FullVolumeAlpha}");
-    // NOCV.Logger.LogDebug(AoAFeedback.aoaEffects.ShakeFactor);
-    // NOCV.Logger.LogDebug(aircraft.name);
-    // }
 }

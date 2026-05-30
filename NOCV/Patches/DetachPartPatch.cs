@@ -21,7 +21,7 @@ public class DetachPartPatch: VibChannelUser<DetachPartPatch>
     /// <param name="relativePos"></param>
     [HarmonyPrefix]
     [HarmonyPatch(nameof(Unit.DetachPart))]
-    public static void DetachPartPrefix(Unit __instance, byte partID, Vector3 velocity, Vector3 relativePos)
+    public static void DetachPartPrefix(Unit? __instance, byte partID, Vector3 velocity, Vector3 relativePos)
     {
         if (!(__instance.GetPlayer()?.IsLocalPlayer ?? false)) return;
         Channel!.SetVibration(0f, PluginConfig.DetachPartVibrationValue.Value, PluginConfig.DetachPartVibrationDuration.Value);

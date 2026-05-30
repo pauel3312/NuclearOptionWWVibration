@@ -35,6 +35,7 @@ public class VRSWarningPatch: VibChannelUser<VRSWarningPatch>
     /// <param name="instructions"></param>
     /// <returns></returns>
     [HarmonyPatch(nameof(VRSWarning.Refresh))]
+    [HarmonyPriority(Priority.First)]
     [HarmonyTranspiler]
     public static IEnumerable<CodeInstruction> RefreshTranspiler(IEnumerable<CodeInstruction> instructions)
     {

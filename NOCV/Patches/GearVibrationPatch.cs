@@ -18,9 +18,9 @@ public class GearVibrationPatch: VibChannelUser<GearVibrationPatch>
     /// <param name="__instance"></param>
     [HarmonyPrefix]
     [HarmonyPatch(nameof(LandingGear.PlayLatchSound))]
-    public static void LatchSoundVibration(LandingGear __instance)
+    public static void LatchSoundVibration(LandingGear? __instance)
     {
-        if (!__instance.aircraft.Player.IsLocalPlayer) return;
+        if (__instance == null || !__instance.aircraft.Player.IsLocalPlayer) return;
         Channel!.SetVibration(0f, PluginConfig.LatchGearVibrationAmount.Value, __instance.latchSound.length/2);
     }
 
@@ -30,6 +30,7 @@ public class GearVibrationPatch: VibChannelUser<GearVibrationPatch>
     /// <param name="instructions"></param>
     /// <returns></returns>
     [HarmonyTranspiler]
+    [HarmonyPriority(Priority.First)]
     [HarmonyPatch(nameof(LandingGear.FixedUpdate))]
     public static IEnumerable<CodeInstruction> FixedUpdateTranspiler(IEnumerable<CodeInstruction> instructions)
     {
@@ -71,6 +72,7 @@ public class GearVibrationPatch: VibChannelUser<GearVibrationPatch>
     /// <returns></returns>
     [HarmonyTranspiler]
     [HarmonyPatch(typeof(LandingGear), nameof(LandingGear.LandingGear_OnSetGear))]
+    [HarmonyPriority(Priority.First)]
     public static IEnumerable<CodeInstruction> OnsetGearTranspiler(IEnumerable<CodeInstruction> instructions) {
         var audioSourcePlayMethod = AccessTools.Method(typeof(AudioSource), nameof(AudioSource.Play));
         var foldSourceField = AccessTools.Field(typeof(LandingGear), nameof(LandingGear.foldSoundSource));

@@ -25,8 +25,8 @@ public class BayDoorPatches: VibChannelUser<BayDoorPatches>
     /// <param name="instructions"></param>
     /// <returns></returns>
     [HarmonyTranspiler]
+    [HarmonyPriority(Priority.First)]
     [HarmonyPatch(typeof(BayDoor), nameof(BayDoor.Update))]
-
     public static IEnumerable<CodeInstruction> UpdateTranspiler(IEnumerable<CodeInstruction> instructions)
     {
         var playMethod = AccessTools.Method(typeof(AudioSource), nameof(AudioSource.Play));

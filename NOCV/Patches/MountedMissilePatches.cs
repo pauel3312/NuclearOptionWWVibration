@@ -23,10 +23,10 @@ public class MountedMissilePatches: VibChannelUser<MountedMissilePatches>
     [HarmonyPrefix]
     [HarmonyPatch(nameof(MountedMissile.Fire))]
     // ReSharper disable once InconsistentNaming
-    public static void FirePatch(MountedMissile __instance, Unit owner, Unit target, Vector3 inheritedVelocity,
+    public static void FirePatch(MountedMissile? __instance, Unit owner, Unit target, Vector3 inheritedVelocity,
         WeaponStation weaponStation, GlobalPosition aimpoint)
     {
-        if (!(owner.GetPlayer()?.IsLocalPlayer ?? false) || __instance.fired) return;
+        if (!(owner.GetPlayer()?.IsLocalPlayer ?? false) || (__instance?.fired ?? true)) return;
         Channel!.SetVibration(0f, PluginConfig.MissileFiringAmount.Value, PluginConfig.MissileFiringDuration.Value);
     }
 }

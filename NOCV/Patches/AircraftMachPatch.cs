@@ -19,6 +19,7 @@ public class AircraftMachPatch:VibChannelUser<AircraftMachPatch>
     /// <returns></returns>
     [HarmonyPatch(nameof(Aircraft.FixedUpdate))]
     [HarmonyTranspiler]
+    [HarmonyPriority(Priority.First)]
     public static IEnumerable<CodeInstruction> FixedUpdateTranspiler(IEnumerable<CodeInstruction> instructions)
     {
         var shareAircraftMethod = AccessTools.Method(typeof(Aircraft), nameof(Aircraft.ShakeAircraft));
@@ -34,9 +35,9 @@ public class AircraftMachPatch:VibChannelUser<AircraftMachPatch>
         }
     }
 
-    private static float StartVibration(float num, Aircraft aircraft)
+    private static float StartVibration(float num, Aircraft? aircraft)
     {
-        if (aircraft.Player.IsLocalPlayer)
+        if (aircraft != null && aircraft.Player.IsLocalPlayer)
         {
             Channel!.SetVibration(0f, num * PluginConfig.MachMultiplier.Value, 2 * Time.fixedDeltaTime);
         }        
