@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NOCV.Features;
@@ -5,23 +6,21 @@ using UnityEngine;
 
 namespace NOCV.Helpers;
 
-
-internal sealed class VibForAudioSourceParams(AudioSource source, int motorIndex, float maxMagnitude )
+internal sealed class VibForAudioSourceParams(AudioSource source, int motorIndex, float maxMagnitude)
 {
     internal AudioSource Source = source;
     internal int MotorIndex = motorIndex;
     internal float MaxMagnitude = maxMagnitude;
-
 }
 
 /// <summary>
 ///     Starts vibration on audioSource play.
 /// </summary>
-public class VibOnAudioSources: MonoBehaviour
+public class VibOnAudioSources : MonoBehaviour
 {
     private static readonly HashSet<VibForAudioSourceParams> PlayingSources = [];
 
-    
+
     private static VibOnAudioSources? Instance { get; set; }
 
     private static VibrationChannel? _channel;
@@ -55,7 +54,7 @@ public class VibOnAudioSources: MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
-        else if (Instance != this) 
+        else if (Instance != this)
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
@@ -78,28 +77,28 @@ public class VibOnAudioSources: MonoBehaviour
     private void FixedUpdate()
     {
         var sourcesToRemove = PlayingSources
-            .Where(ps => ps.Source == null || !ps.Source.isPlaying);
+            .Where(ps => ps.Source == null || !ps.Source.isPlaying).ToList();
 
         foreach (var source in sourcesToRemove)
         {
             // NOCV.Logger.LogDebug($"Removed source. Now has {PlayingSources.Count} sources.");
-            _channel!.Disable();
+            _channel?.Disable();
             PlayingSources.Remove(source);
         }
-        
+
         var motorMagnitudes = new Dictionary<int, float>();
         foreach (var playingSource in PlayingSources)
         {
             if (!motorMagnitudes.ContainsKey(playingSource.MotorIndex))
                 motorMagnitudes[playingSource.MotorIndex] = 0;
-            motorMagnitudes[playingSource.MotorIndex] += playingSource.MaxMagnitude*playingSource.Source.volume;
+            motorMagnitudes[playingSource.MotorIndex] += playingSource.MaxMagnitude * playingSource.Source.volume;
         }
 
         foreach (var kvp in motorMagnitudes)
         {
             var motor = kvp.Key;
             var magnitude = kvp.Value;
-            _channel!.setVibrationOnMotorIndex(motor, magnitude);
+            _channel?.setVibrationOnMotorIndex(motor, magnitude);
         }
     }
 }

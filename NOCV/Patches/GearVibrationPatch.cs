@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -20,8 +21,9 @@ public class GearVibrationPatch: VibChannelUser<GearVibrationPatch>
     [HarmonyPatch(nameof(LandingGear.PlayLatchSound))]
     public static void LatchSoundVibration(LandingGear? __instance)
     {
-        if (__instance == null || !__instance.aircraft.Player.IsLocalPlayer) return;
-        Channel!.SetVibration(0f, PluginConfig.LatchGearVibrationAmount.Value, __instance.latchSound.length/2);
+            if (__instance == null || !(__instance.aircraft.Player?.IsLocalPlayer ?? false) ||
+                __instance.latchSound == null) return;
+            Channel?.SetVibration(0f, PluginConfig.LatchGearVibrationAmount.Value, __instance.latchSound.length / 2);
     }
 
     /// <summary>
